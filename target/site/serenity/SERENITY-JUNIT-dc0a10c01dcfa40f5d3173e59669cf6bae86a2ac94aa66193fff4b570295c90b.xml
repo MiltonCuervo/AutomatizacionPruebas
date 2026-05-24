@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="1" failures="0" name="Purchase flow for new users on Advantage Online Shopping" skipped="0" tests="1" time="0.03" timestamp="2026-05-23 08:52:41"><testcase name="New user completes a purchase with multiple products"><error message="Unsupported driver type: brave" type="java.lang.IllegalArgumentException">Unsupported driver type: brave</error><system-err>Unsupported driver type: brave
-</system-err></testcase></testsuite>
