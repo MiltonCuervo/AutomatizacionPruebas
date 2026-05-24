@@ -1,0 +1,184 @@
+Initialized native services in: /Users/santiagozapatacoral/.gradle/native
+Initialized jansi services in: /Users/santiagozapatacoral/.gradle/native
+The client will now receive all logging from the daemon (pid: 9193). The daemon log file: /Users/santiagozapatacoral/.gradle/daemon/9.5.1/daemon-9193.out.log
+Starting 3rd build in daemon [uptime: 9 mins 47.566 secs, performance: 98%, GC rate: 0.00/s, heap usage: 4% of 512 MiB, non-heap usage: 25% of 384 MiB]
+Using 10 worker leases.
+Operational build model parameters: {cachingModelBuilding=false, configurationCache=false, configurationCacheDisabledReason=null, configurationCacheParallelLoad=false, configurationCacheParallelStore=false, configureOnDemand=false, invalidateCoupledProjects=false, isolatedProjects=false, modelAsProjectDependency=false, modelBuilding=false, parallelModelBuilding=false, parallelProjectConfiguration=false, parallelProjectExecution=false, resilientModelBuilding=false}
+Invalidating in-memory cache of /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/.gradle/buildOutputCleanup/outputFiles.bin
+Now considering [/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Settings evaluated using settings file '/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/settings.gradle'.
+Projects loaded. Root project using build file '/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build.gradle'.
+Included projects: [root project 'advShop']
+
+> Configure project :
+Evaluating root project 'advShop' using build file '/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build.gradle'.
+Invalidating in-memory cache of /Users/santiagozapatacoral/.gradle/caches/journal-1/file-access.bin
+Caching disabled for Groovy DSL script compilation (cp_proj) because:
+  Build cache is disabled
+  Not worth caching.
+Compiling build file '/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build.gradle' using SubsetScriptTransformer.
+Resolved plugin [id: 'io.github.jumosqu12.screenplayarchitecture', version: '2.0.1']
+Resolved plugin [id: 'java']
+Resolved plugin [id: 'eclipse']
+Resolved plugin [id: 'idea']
+Caching disabled for Groovy DSL script compilation (proj) because:
+  Build cache is disabled
+  Not worth caching.
+Compiling build file '/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build.gradle' using BuildScriptTransformer.
+All projects evaluated.
+Task name matched 'clean'
+Task name matched 'test'
+Selected primary task 'clean' from project :
+Selected primary task 'test' from project :
+Tasks to be executed: [task ':clearReports', task ':clean', task ':compileJava', task ':processResources', task ':classes', task ':compileTestJava', task ':processTestResources', task ':testClasses', task ':test', task ':aggregate']
+Tasks that were excluded: []
+Resolve mutations for :clearReports (Thread[#227,Execution worker,5,main]) started.
+:clearReports (Thread[#232,Execution worker Thread 6,5,main]) started.
+
+> Task :clearReports
+Caching disabled for task ':clearReports' because:
+  Build cache is disabled
+Task ':clearReports' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+Resolve mutations for :clean (Thread[#232,Execution worker Thread 6,5,main]) started.
+:clean (Thread[#232,Execution worker Thread 6,5,main]) started.
+destroyer locations for task group 0 (Thread[#226,included builds,5,main]) started.
+
+> Task :clean
+Caching disabled for task ':clean' because:
+  Build cache is disabled
+Task ':clean' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+Resolve mutations for :compileJava (Thread[#232,Execution worker Thread 6,5,main]) started.
+:compileJava (Thread[#232,Execution worker Thread 6,5,main]) started.
+
+> Task :compileJava
+Caching disabled for task ':compileJava' because:
+  Build cache is disabled
+Task ':compileJava' is not up-to-date because:
+  Output property 'destinationDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/classes/java/main has been removed.
+  Output property 'destinationDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/classes/java/main/co has been removed.
+  Output property 'destinationDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/classes/java/main/co/edu has been removed.
+  and more...
+The input changes require a full rebuild for incremental task ':compileJava'.
+Compilation mode: in-process compilation
+Full recompilation is required because no incremental change information is available. This is usually caused by clean builds or changing compiler arguments.
+Compiling with toolchain '/opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home'.
+Compiling with JDK Java compiler API.
+Class dependency analysis for incremental compilation took 0.0 secs.
+Created classpath snapshot for incremental compilation in 0.013 secs.
+Resolve mutations for :processResources (Thread[#232,Execution worker Thread 6,5,main]) started.
+:processResources (Thread[#232,Execution worker Thread 6,5,main]) started.
+
+> Task :processResources NO-SOURCE
+Skipping task ':processResources' as it has no source files and no previous output files.
+Resolve mutations for :classes (Thread[#232,Execution worker Thread 6,5,main]) started.
+:classes (Thread[#232,Execution worker Thread 6,5,main]) started.
+
+> Task :classes
+Skipping task ':classes' as it has no actions.
+Resolve mutations for :compileTestJava (Thread[#232,Execution worker Thread 6,5,main]) started.
+:compileTestJava (Thread[#232,Execution worker Thread 6,5,main]) started.
+
+> Task :compileTestJava
+Caching disabled for task ':compileTestJava' because:
+  Build cache is disabled
+Task ':compileTestJava' is not up-to-date because:
+  Output property 'destinationDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/classes/java/test has been removed.
+  Output property 'destinationDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/classes/java/test/co has been removed.
+  Output property 'destinationDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/classes/java/test/co/edu has been removed.
+  and more...
+The input changes require a full rebuild for incremental task ':compileTestJava'.
+Compilation mode: in-process compilation
+Full recompilation is required because no incremental change information is available. This is usually caused by clean builds or changing compiler arguments.
+Compiling with toolchain '/opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home'.
+Compiling with JDK Java compiler API.
+Class dependency analysis for incremental compilation took 0.0 secs.
+Created classpath snapshot for incremental compilation in 0.012 secs.
+Resolve mutations for :processTestResources (Thread[#232,Execution worker Thread 6,5,main]) started.
+:processTestResources (Thread[#232,Execution worker Thread 6,5,main]) started.
+
+> Task :processTestResources
+Caching disabled for task ':processTestResources' because:
+  Build cache is disabled
+  Not worth caching
+Task ':processTestResources' is not up-to-date because:
+  Output property 'destinationDir' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/resources/test has been removed.
+  Output property 'destinationDir' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/resources/test/features has been removed.
+  Output property 'destinationDir' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/resources/test/features/complete_purchase.feature has been removed.
+  and more...
+Resolve mutations for :testClasses (Thread[#232,Execution worker Thread 6,5,main]) started.
+:testClasses (Thread[#232,Execution worker Thread 6,5,main]) started.
+
+> Task :testClasses
+Skipping task ':testClasses' as it has no actions.
+Resolve mutations for :test (Thread[#232,Execution worker Thread 6,5,main]) started.
+:test (Thread[#232,Execution worker Thread 6,5,main]) started.
+Gradle Test Executor 2 started executing tests.
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/Users/santiagozapatacoral/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/32.1.3-jre/f306708742ce2bf0fb0901216183bc14073feae/guava-32.1.3-jre.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Gradle Test Executor 2 finished executing tests.
+
+> Task :test
+Caching disabled for task ':test' because:
+  Build cache is disabled
+Task ':test' is not up-to-date because:
+  Output property 'binaryResultsDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/test-results/test/binary has been removed.
+  Output property 'binaryResultsDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/test-results/test/binary/output-events.bin has been removed.
+  Output property 'binaryResultsDirectory' file /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/test-results/test/binary/results-generic.bin has been removed.
+  and more...
+Starting process 'Gradle Test Executor 2'. Working directory: /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas Command: /opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home/bin/java -Dorg.gradle.internal.worker.tmpdir=/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/tmp/test/work @/Users/santiagozapatacoral/.gradle/.tmp/gradle-worker-classpath12171623069210862280txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=CO -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 2'
+Successfully started process 'Gradle Test Executor 2'
+
+AdvShopRunner STANDARD_ERROR
+    [Test worker] INFO  - [96m
+
+    -------------------------------------------------------------------------------------
+         _______. _______ .______       _______ .__   __.  __  .___________.____    ____ 
+        /       ||   ____||   _  \     |   ____||  \ |  | |  | |           |\   \  /   / 
+       |   (----`|  |__   |  |_)  |    |  |__   |   \|  | |  | `---|  |----` \   \/   /  
+        \   \    |   __|  |      /     |   __|  |  . `  | |  |     |  |       \_    _/   
+    .----)   |   |  |____ |  |\  \----.|  |____ |  |\   | |  |     |  |         |  |     
+    |_______/    |_______|| _| `._____||_______||__| \__| |__|     |__|         |__|    
+                                                                                     
+     News and tutorials at https://serenity-bdd.info                                     
+     Documentation at https://serenity-bdd.github.io                                     
+     Test Automation Training and Coaching: https://www.serenity-dojo.com                
+     Commercial Support: https://www.serenity-dojo.com/serenity-bdd-enterprise-support   
+     Join the Serenity Community on Gitter: https://gitter.im/serenity-bdd/serenity-core 
+    -------------------------------------------------------------------------------------
+    [0m
+    [Test worker] INFO  - Test Suite Started: Purchase flow for new users on Advantage Online Shopping
+Generating HTML test report...
+Finished generating test html results (0.002 secs) into: /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/reports/tests/test
+Finished generating test XML results (0.0 secs) into: /Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/test-results/test
+Resolve mutations for :aggregate (Thread[#232,Execution worker Thread 6,5,main]) started.
+:aggregate (Thread[#232,Execution worker Thread 6,5,main]) started.
+
+> Task :aggregate
+Caching disabled for task ':aggregate' because:
+  Build cache is disabled
+Task ':aggregate' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+Generating Serenity Reports
+  - Main report: file:///Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/target/site/serenity/index.html
+      - Test Root: null
+      - Requirements base directory: null
+Test results for 0 tests generated in 267 ms in directory: file:/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/target/site/serenity/
+
+[Incubating] Problems report is available at: file:///Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.5.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2s
+7 actionable tasks: 7 executed
+Watched directory hierarchies: [/Users/santiagozapatacoral/Documents/GitHub/AutomatizacionPruebas]
