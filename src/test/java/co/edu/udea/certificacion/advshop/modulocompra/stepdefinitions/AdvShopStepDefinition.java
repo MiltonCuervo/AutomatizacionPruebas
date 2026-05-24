@@ -1,5 +1,6 @@
 package co.edu.udea.certificacion.advshop.modulocompra.stepdefinitions;
 
+import co.edu.udea.certificacion.advshop.modulocompra.tasks.EnterThe;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.OpenThe;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -17,25 +18,24 @@ public class AdvShopStepDefinition {
 
     public final Actor Buyer = Actor.named("Robinson");
 
-    @Managed(driver = "safari", uniqueSession = true)
+    @Managed(driver = "chrome", uniqueSession = true)
     public WebDriver theDriver;
 
     @Before
     public void config(){
         Buyer.can(BrowseTheWeb.with(theDriver));
-        OnStage.setTheStage(new OnlineCast());
-        OnStage.theActorCalled("user");
+        //OnStage.setTheStage(new OnlineCast());
+        //OnStage.theActorCalled("user");
     }
 
     @Given("a new user is on the Advantage Online Shopping home page")
     public void aNewUserIsOnTheAdvantageOnlineShoppingHomePage() {
-        // Write code here that turns the phrase above into concrete actions
         Buyer.attemptsTo(OpenThe.browser());
     }
+
     @When("the user registers with valid credentials")
     public void theUserRegistersWithValidCredentials() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
+        Buyer.attemptsTo(EnterThe.information());
     }
     @When("the user adds a product with quantity {int} to the cart")
     public void theUserAddsAProductWithQuantityToTheCart(Integer int1) {
