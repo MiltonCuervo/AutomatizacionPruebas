@@ -2,13 +2,13 @@ package co.edu.udea.certificacion.advshop.modulocompra.stepdefinitions;
 
 import co.edu.udea.certificacion.advshop.modulocompra.questions.CartQuestions;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.BuyProduct;
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.AdvantagePageElement;
+import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.HomePage;
 import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.CartPageElements;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.serenitybdd.model.time.InternalSystemClock;
+
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.annotations.CastMember;
@@ -22,19 +22,19 @@ import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isPres
 import static org.hamcrest.Matchers.containsString;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
-import static org.junit.Assert.assertEquals;
 
 public class ShoppingStepDefinition {
 
     @CastMember(name = "Robinson")
     private Actor actor;
 
-    @Given("the user is logged in as {string}")
-    public void theUserIsLoggedInAs(String username) {
+    @Given("the user is logged in with the registered account")
+    public void theUserIsLoggedInAs() {
+        String dynamicUsername = actor.recall("registered_user");
         actor.attemptsTo(
-                WaitUntil.the(AdvantagePageElement.USERNAME_TEXT, isVisible()).forNoMoreThan(7).seconds()
+                WaitUntil.the(HomePage.USERNAME_TEXT, isVisible()).forNoMoreThan(7).seconds()
         );
-        actor.should(seeThat("The session is still active for user", Text.of(AdvantagePageElement.USERNAME_TEXT), containsString(username)));
+        actor.should(seeThat("The session is still active for user", Text.of(HomePage.USERNAME_TEXT), containsString(dynamicUsername)));
     }
 
     @When("the user buys {int} units of {string} from the {string} section")

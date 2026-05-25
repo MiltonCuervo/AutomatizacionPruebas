@@ -3,7 +3,6 @@ package co.edu.udea.certificacion.advshop.modulocompra.questions;
 import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.CartPageElements;
 import net.serenitybdd.screenplay.Question;
 import net.serenitybdd.screenplay.questions.Presence;
-import net.serenitybdd.screenplay.questions.Text;
 
 public class CartQuestions {
 

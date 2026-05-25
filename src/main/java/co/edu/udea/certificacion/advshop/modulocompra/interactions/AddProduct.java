@@ -7,9 +7,7 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Interaction;
 import net.serenitybdd.screenplay.Tasks;
 import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.screenplay.actions.Enter; // O la acción correspondiente para cambiar cantidad
 import net.serenitybdd.screenplay.actions.JavaScriptClick;
-import net.serenitybdd.screenplay.actions.Scroll;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 
 import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.*;
@@ -37,8 +35,6 @@ public class AddProduct implements Interaction {
                 Click.on(HomePage.categoryImage(category)),
 
                 WaitUntil.the(CategoryPage.productNamed(product), isPresent()).forNoMoreThan(10).seconds(),
-                //Scroll.to(CategoryPage.productNamed(product)),
-
                 JavaScriptClick.on(CategoryPage.productNamed(product)),
 
                 WaitUntil.the(ProductPage.ADD_TO_CART_BUTTON, isEnabled()).forNoMoreThan(7).seconds(),

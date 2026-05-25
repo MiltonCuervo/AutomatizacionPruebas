@@ -1,7 +1,6 @@
 package co.edu.udea.certificacion.advshop.modulocompra.userinterfaces;
 
 import net.serenitybdd.screenplay.targets.Target;
-import org.openqa.selenium.By;
 
 public class CartPageElements {
 

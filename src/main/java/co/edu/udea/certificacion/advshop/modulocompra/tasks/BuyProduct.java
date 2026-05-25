@@ -1,20 +1,8 @@
 package co.edu.udea.certificacion.advshop.modulocompra.tasks;
 
-/*
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.CategoryPage;
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.HomePage;
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.ProductPage;
-
- */
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.AddProduct;
-import co.edu.udea.certificacion.advshop.modulocompra.interactions.SelectQuantity;
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.CategoryPage;
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.HomePage;
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.ProductPage;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.annotations.Step;
 
 public class BuyProduct implements Task {
 

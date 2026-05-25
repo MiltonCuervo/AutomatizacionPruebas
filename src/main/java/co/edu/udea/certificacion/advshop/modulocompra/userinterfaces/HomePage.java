@@ -5,6 +5,10 @@ import net.serenitybdd.screenplay.targets.Target;
 
 public class HomePage {
 
+    public static final Target BTN_USER_PROFILE = Target.the("button to access user profile").locatedBy("//*[@id='menuUser']");
+    public static final Target BTN_CREATE_NEW_ACCOUNT = Target.the("button to create a new account").locatedBy("//a[contains(text(), 'CREATE NEW ACCOUNT')]");
+    public static final Target USERNAME_TEXT = Target.the("text username").locatedBy("//*[@id=\"menuUserLink\"]/span");
+
     public static Target categoryImage(String category) {
         return Target.the(category + " section image")
                 .locatedBy("//*[@id='" + category.toLowerCase() + "Img']");
