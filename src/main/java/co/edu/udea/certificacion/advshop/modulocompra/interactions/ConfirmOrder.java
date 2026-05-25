@@ -1,26 +1,27 @@
 package co.edu.udea.certificacion.advshop.modulocompra.interactions;
 
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.CartPageElements;
 import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.CheckoutPage;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Interaction;
+import net.serenitybdd.screenplay.Tasks;
 import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.waits.WaitUntil;
+
 import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 
-public class GoFromCheckoutTo implements Interaction {
+public class ConfirmOrder implements Interaction {
 
-    public GoFromCheckoutTo() {}
-    
+    public static ConfirmOrder purchase() {
+        return Tasks.instrumented(ConfirmOrder.class);
+    }
+
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
-        WaitUntil.the(CheckoutPage.REGISTRATION_BTN, isVisible()).forNoMoreThan(10).seconds(),
-        Click.on(CheckoutPage.REGISTRATION_BTN)
-    );
+                WaitUntil.the(CheckoutPage.BTN_PAY_NOW, isVisible())
+                        .forNoMoreThan(10).seconds(),
+                Click.on(CheckoutPage.BTN_PAY_NOW)
+        );
     }
 
-    public static GoFromCheckoutTo register() {
-        return new GoFromCheckoutTo();
-    }
 }

@@ -5,17 +5,25 @@ import co.edu.udea.certificacion.advshop.modulocompra.interactions.GoFromHomeTo;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.LogoutFromHome;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.NavigateToProductPage;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.WaitTime;
+import co.edu.udea.certificacion.advshop.modulocompra.interactions.ProceedTo;
+import co.edu.udea.certificacion.advshop.modulocompra.models.PaymentDetails;
 import co.edu.udea.certificacion.advshop.modulocompra.models.Product;
 import co.edu.udea.certificacion.advshop.modulocompra.models.User;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.ConfirmationMessageIs;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.OrderNumberIs;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.PaymentMethodWas;
 import co.edu.udea.certificacion.advshop.modulocompra.questions.RegistrationQuestions;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.UserIs;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.BuyProduct;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.OpenThe;
+import co.edu.udea.certificacion.advshop.modulocompra.tasks.ProcessPayment;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnCheckout;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnHome;
 import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.ProductPage;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -27,6 +35,7 @@ import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import net.thucydides.core.webdriver.ThucydidesWebDriverSupport;
+import org.hamcrest.Matchers;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -35,11 +44,13 @@ import static org.hamcrest.Matchers.is;
 public class PurchaseStepDefinition {
 
     private Actor buyer;
+    private Scenario currentScenario;
 
     @Before
-    public void setTheStage() {
+    public void setTheStage(Scenario scenario) {
         OnStage.setTheStage(new OnlineCast());
         buyer = OnStage.theActorCalled("Robinson");
+        currentScenario = scenario;
     }
 
     // ─── Setup ───────────────────────────────────────────────────────────────
@@ -57,10 +68,14 @@ public class PurchaseStepDefinition {
         String dynamicUser = usernameBase + timeStamp.substring(timeStamp.length() - 5);
         buyer.remember("REGISTERED_USERNAME", dynamicUser);
         User newUser = new User(dynamicUser, email, password);
-        buyer.attemptsTo(RegisterOnHome.withData(newUser));
+        if (currentScenario.getSourceTagNames().contains("@checkout-flow")) {
+            buyer.attemptsTo(RegisterOnCheckout.withData(newUser));
+        } else {
+            buyer.attemptsTo(RegisterOnHome.withData(newUser));
+        }
     }
 
-    // ✅ Nuevo: sin timestamp para el escenario de username repetido
+    // ✅ Nuevo: sin timestamp para el escenario de username repetido (Tu rama)
     @When("the user creates an account with fixed username {string}, email {string} and password {string}")
     public void theUserCreatesAnAccountWithFixedUsername(String baseUsername, String email, String password) {
         // Generamos un sufijo corto de 4 números aleatorios para no superar los 15 caracteres
@@ -69,7 +84,7 @@ public class PurchaseStepDefinition {
         // Usamos una base corta (ej: "qa_") + el sufijo (ej: "qa_4821")
         String uniqueUserForThisTest = "qa_" + randomSuffix;
 
-        // ¡LA MAGIA! Hacemos que el actor guarde este usuario en su memoria
+        // Hacemos que el actor guarde este usuario en su memoria
         OnStage.theActorInTheSpotlight().remember("DUPLICATE_USER", uniqueUserForThisTest);
 
         OnStage.theActorInTheSpotlight().attemptsTo(
@@ -93,7 +108,7 @@ public class PurchaseStepDefinition {
         buyer.attemptsTo(RegisterOnCheckout.withData(newUser));
     }
 
-    // ─── Productos ───────────────────────────────────────────────────────────
+    // ─── Productos y Carrito ─────────────────────────────────────────────────
 
     @When("the user buys {int} units of {string} from the {string} section")
     public void theUserBuysProducts(int quantity, String product, String category) {
@@ -101,24 +116,46 @@ public class PurchaseStepDefinition {
         buyer.attemptsTo(BuyProduct.from(productToBuy));
     }
 
-    // ─── Pago y confirmación ─────────────────────────────────────────────────
+    // ─── Pago (Integrado de Main) ────────────────────────────────────────────
+
+    @When("the user proceeds to checkout")
+    public void theUserProceedsToCheckout() {
+        buyer.attemptsTo(ProceedTo.checkout());
+    }
 
     @When("the user pays with {string}")
     public void theUserPays(String paymentMethod) {
-        // buyer.attemptsTo(ProcessPayment.withMethod(paymentMethod));
+        PaymentDetails details = paymentMethod.equalsIgnoreCase("Master Credit")
+                ? PaymentDetails.masterCredit()
+                : PaymentDetails.safePay();
+        buyer.attemptsTo(ProcessPayment.with(details));
     }
 
-    @Then("the purchase should be completed successfully")
+    // ─── Confirmación (Integrado de Main) ────────────────────────────────────
+
+    @Then("the purchase is completed successfully")
     public void thePurchaseShouldBeCompleted() {
-        // buyer.should(seeThat(ValidatePurchase.isSuccess(), is(true)));
+        GivenWhenThen.then(buyer).should(            
+            GivenWhenThen.seeThat("El mensaje de éxito", 
+            ConfirmationMessageIs.value(), Matchers.containsString("Thank you for buying with Advantage")));
     }
 
-    @Then("an order number should be visible on the confirmation page")
-    public void anOrderNumberShouldBeVisible() {
-        // buyer.should(seeThat(ConfirmationPage.orderNumber(), isVisible()));
+    @Then("the user sees the order confirmation with their {string}, {string}, and order number")
+    public void anOrderNumberShouldBeVisible(String user, String paymentMethod) {
+        String buyerUsername = buyer.recall("REGISTERED_USERNAME");
+
+        GivenWhenThen.then(buyer).should(
+            GivenWhenThen.seeThat("El usuario en la confirmación", 
+            UserIs.value(), Matchers.equalTo(buyerUsername)),
+            
+            GivenWhenThen.seeThat("El método de pago utilizado", 
+            PaymentMethodWas.value(), Matchers.containsString(paymentMethod.replace(" ", ""))),
+        
+            GivenWhenThen.seeThat("El número de orden generado", 
+            OrderNumberIs.value(), Matchers.not(Matchers.equalTo(""))));
     }
 
-    // ─── Excepcionales: registro ──────────────────────────────────────────────
+    // ─── Excepcionales: Registro (Tu rama) ────────────────────────────────────
 
     @And("the user logs out from the store")
     public void theUserLogsOutFromTheStore() {
@@ -127,7 +164,7 @@ public class PurchaseStepDefinition {
 
     @And("the user tries to register again with username {string}, email {string} and password {string}")
     public void theUserTriesToRegisterAgain(String ignoredUsername, String email, String password) {
-        // Ignoramos el string del feature y sacamos el usuario exacto que creamos en el paso 1
+        // Sacamos el usuario exacto que creamos en el paso 1
         String userFromMemory = OnStage.theActorInTheSpotlight().recall("DUPLICATE_USER");
 
         OnStage.theActorInTheSpotlight().attemptsTo(
@@ -182,7 +219,7 @@ public class PurchaseStepDefinition {
         );
     }
 
-    // ─── Excepcionales: carrito ───────────────────────────────────────────────
+    // ─── Excepcionales: Carrito (Tu rama) ─────────────────────────────────────
 
     @When("the user navigates to the {string} product in {string}")
     public void theUserNavigatesToProduct(String product, String category) {
