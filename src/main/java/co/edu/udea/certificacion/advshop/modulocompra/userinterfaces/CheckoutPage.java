@@ -24,7 +24,7 @@ public class CheckoutPage {
 
     // Confirmed: exists in the form (Cardholder name field)
     public static final Target INPUT_CARDHOLDER_NAME = Target.the("cardholder name input")
-            .locatedBy("//*[@id='paymentMethod']/div/div[4]/sec-form/div[1]/sec-view[2]/div/input");
+            .locatedBy("//*[@id='paymentMethod']/div/div[4]/sec-form/div[2]/sec-view/div/input");
 
     // Confirmed: options are numeric "01".."12" for month, "2026","2027".. for year
     public static final Target SELECT_EXPIRY_MONTH = Target.the("expiry month selector")
@@ -34,7 +34,7 @@ public class CheckoutPage {
             .locatedBy("//*[@id='paymentMethod']/div/div[4]/sec-form/div[2]/div/sec-view[2]/div/select");
 
     public static final Target INPUT_CVV = Target.the("CVV input")
-            .locatedBy("//*[@id='paymentMethod']/div/div[4]/sec-form/div[2]/sec-view/div/input");
+            .locatedBy("//*[@id='paymentMethod']/div/div[4]/sec-form/div[1]/sec-view[2]/div/input");
 
     // ── Pay ───────────────────────────────────────────────────────
     public static final Target BTN_PAY_NOW = Target.the("pay now button")
