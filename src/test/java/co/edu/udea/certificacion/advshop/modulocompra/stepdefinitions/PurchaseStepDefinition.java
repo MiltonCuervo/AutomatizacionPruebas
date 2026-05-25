@@ -81,15 +81,12 @@ public class PurchaseStepDefinition {
         buyer.attemptsTo(RegisterOnCheckout.withData(newUser));
     }
 
-    // ─── Productos y Carrito ─────────────────────────────────────────────────
-
     @When("the user buys {int} units of {string} from the {string} section")
     public void theUserBuysProducts(int quantity, String product, String category) {
         Product productToBuy = new Product(product, category, quantity);
         buyer.attemptsTo(BuyProduct.from(productToBuy));
     }
 
-    // ─── Pago (Integrado de Main) ────────────────────────────────────────────
 
     @When("the user proceeds to checkout")
     public void theUserProceedsToCheckout() {
@@ -104,7 +101,6 @@ public class PurchaseStepDefinition {
         buyer.attemptsTo(ProcessPayment.with(details));
     }
 
-    // ─── Confirmación (Integrado de Main) ────────────────────────────────────
 
     @Then("the purchase is completed successfully")
     public void thePurchaseShouldBeCompleted() {
@@ -128,7 +124,7 @@ public class PurchaseStepDefinition {
             OrderNumberIs.value(), Matchers.not(Matchers.equalTo(""))));
     }
 
-    // Excepcionales
+    // Excepcionales --------------------------------------------------
 
     @And("the user logs out from the store")
     public void theUserLogsOutFromTheStore() {
@@ -184,8 +180,6 @@ public class PurchaseStepDefinition {
         );
     }
 
-    // ─── Excepcionales: Carrito (Tu rama) ─────────────────────────────────────
-
     @When("the user navigates to the {string} product in {string}")
     public void theUserNavigatesToProduct(String product, String category) {
         buyer.attemptsTo(NavigateToProductPage.named(product, category));
@@ -212,8 +206,6 @@ public class PurchaseStepDefinition {
                         equalTo("1"))
         );
     }
-
-    // ─── Teardown ────────────────────────────────────────────────────────────
 
     @After
     public void closeBrowser() {
