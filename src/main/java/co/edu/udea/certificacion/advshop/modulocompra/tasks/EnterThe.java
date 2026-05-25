@@ -9,12 +9,23 @@ import net.serenitybdd.screenplay.actions.Open;
 
 public class EnterThe implements Task {
 
-    @Override
-    public <T extends Actor> void performAs(T actor) {
-        actor.attemptsTo(AuthenticateThe.user());
+    private final String username;
+    private final String email;
+    private final String password;
+
+    public EnterThe(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 
-    public static EnterThe information(){
-        return Tasks.instrumented(EnterThe.class);
+    @Override
+    public <T extends Actor> void performAs(T actor) {
+        // Aquí le pasas los datos del feature a la interacción refactorizada
+        actor.attemptsTo(AuthenticateThe.userWithCredentials(username, email, password));
+    }
+
+    public static EnterThe information(String username, String email, String password) {
+        return Tasks.instrumented(EnterThe.class, username, email, password);
     }
 }

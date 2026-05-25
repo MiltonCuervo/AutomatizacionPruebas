@@ -14,5 +14,6 @@ public class AdvantagePageElement {
     public static final Target INPUT_CONFIRM_PASSWORD = Target.the("input for confirming password").locatedBy("//input[@name='confirm_passwordRegisterPage']");
     public static final Target CHECKBOX_TERMS_AND_CONDITIONS = Target.the("checkbox for accepting terms and conditions").locatedBy("//input[@name='i_agree']");
     public static final Target BTN_REGISTER = Target.the("button to submit registration").locatedBy("//button[@id='register_btn']");
+    public static final Target USERNAME_TEXT = Target.the("text username").locatedBy("//*[@id=\"menuUserLink\"]/span");
 
 }

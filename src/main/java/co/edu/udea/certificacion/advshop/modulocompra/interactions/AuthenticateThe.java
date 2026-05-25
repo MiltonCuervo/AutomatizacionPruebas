@@ -6,16 +6,23 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actions.Enter;
 import net.serenitybdd.screenplay.matchers.WebElementStateMatchers;
+import net.serenitybdd.screenplay.waits.Wait;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 
 import static co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.AdvantagePageElement.*;
 
 public class AuthenticateThe implements Interaction {
-    
-    private static final String USERNAME = generarUsuarioAleatorio();
-    private static final String PASSWORD = "Robinson123";
-    private static final String CONFIRM_PASSWORD = "Robinson123";
-    private static final String EMAIL = "robinson123@gmail.com";
+
+    private final String username;
+    private final String email;
+    private final String password;
+
+    // El constructor ahora recibe los datos dinámicos
+    public AuthenticateThe(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
     @Override
     public <T extends Actor> void performAs(T actor) {
@@ -24,23 +31,28 @@ public class AuthenticateThe implements Interaction {
             WaitUntil.the(BTN_CREATE_NEW_ACCOUNT, WebElementStateMatchers.isVisible())
             .forNoMoreThan(10).seconds(), Click.on(BTN_CREATE_NEW_ACCOUNT));
         actor.attemptsTo(
-            Enter.theValue(USERNAME).into(INPUT_USERNAME),
-            Enter.theValue(EMAIL).into(INPUT_EMAIL),
-            Enter.theValue(PASSWORD).into(INPUT_PASSWORD),
-            Enter.theValue(CONFIRM_PASSWORD).into(INPUT_CONFIRM_PASSWORD),
+            WaitUntil.the(INPUT_USERNAME, WebElementStateMatchers.isVisible())
+                    .forNoMoreThan(10).seconds(),Enter.theValue(username).into(INPUT_USERNAME));
+        actor.attemptsTo(
+            Enter.theValue(email).into(INPUT_EMAIL),
+            Enter.theValue(password).into(INPUT_PASSWORD),
+            Enter.theValue(password).into(INPUT_CONFIRM_PASSWORD),
             Click.on(CHECKBOX_TERMS_AND_CONDITIONS),
             Click.on(BTN_REGISTER));
     }
 
-    public static AuthenticateThe user(){
-        return Tasks.instrumented(AuthenticateThe.class);
-    }    
+    public static AuthenticateThe userWithCredentials(String username, String email, String password) {
+        return Tasks.instrumented(AuthenticateThe.class, username, email, password);
 
-    private static String generarUsuarioAleatorio() {
+    }
+   /* private static String generarUsuarioAleatorio() {
     String time = String.valueOf(System.currentTimeMillis());
     // últimos 7 dígitos del tiempo (cambian cada milisegundo)
-    String shortTime = time.substring(time.length() - 7); 
-    
+    String shortTime = time.substring(time.length() - 7);
+
     return "Rob_" + shortTime; // 11 caracteres en total
     }
+
+    */
+
 }
