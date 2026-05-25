@@ -2,7 +2,7 @@ package co.edu.udea.certificacion.advshop.modulocompra.stepdefinitions;
 
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.AttemptRegistration;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.GoFromHomeTo;
-import co.edu.udea.certificacion.advshop.modulocompra.interactions.LogoutFromHome;
+import co.edu.udea.certificacion.advshop.modulocompra.interactions.ClickLogoutBtn;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.NavigateToProductPage;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.WaitTime;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.ProceedTo;
@@ -15,6 +15,7 @@ import co.edu.udea.certificacion.advshop.modulocompra.questions.PaymentMethodWas
 import co.edu.udea.certificacion.advshop.modulocompra.questions.RegistrationQuestions;
 import co.edu.udea.certificacion.advshop.modulocompra.questions.UserIs;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.BuyProduct;
+import co.edu.udea.certificacion.advshop.modulocompra.tasks.Logout;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.OpenThe;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.ProcessPayment;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnCheckout;
@@ -53,14 +54,10 @@ public class PurchaseStepDefinition {
         currentScenario = scenario;
     }
 
-    // ─── Setup ───────────────────────────────────────────────────────────────
-
     @Given("the user is on the Advantage Online Shopping store")
     public void theUserIsOnTheStore() {
         buyer.wasAbleTo(OpenThe.browser());
     }
-
-    // ─── Registro ────────────────────────────────────────────────────────────
 
     @When("the user creates an account with username base {string}, email {string} and password {string}")
     public void registerUserWithDynamicData(String usernameBase, String email, String password) {
@@ -73,30 +70,6 @@ public class PurchaseStepDefinition {
         } else {
             buyer.attemptsTo(RegisterOnHome.withData(newUser));
         }
-    }
-
-    // ✅ Nuevo: sin timestamp para el escenario de username repetido (Tu rama)
-    @When("the user creates an account with fixed username {string}, email {string} and password {string}")
-    public void theUserCreatesAnAccountWithFixedUsername(String baseUsername, String email, String password) {
-        // Generamos un sufijo corto de 4 números aleatorios para no superar los 15 caracteres
-        String randomSuffix = String.valueOf((int)(Math.random() * 9000) + 1000);
-
-        // Usamos una base corta (ej: "qa_") + el sufijo (ej: "qa_4821")
-        String uniqueUserForThisTest = "qa_" + randomSuffix;
-
-        // Hacemos que el actor guarde este usuario en su memoria
-        OnStage.theActorInTheSpotlight().remember("DUPLICATE_USER", uniqueUserForThisTest);
-
-        OnStage.theActorInTheSpotlight().attemptsTo(
-                GoFromHomeTo.register(),
-                AttemptRegistration.withUsername(uniqueUserForThisTest)
-                        .email(email)
-                        .password(password)
-                        .confirmPassword(password)
-                        .acceptingTerms()
-                        .validForm() // Este será un registro exitoso real
-                        .andSubmit()
-        );
     }
 
     @When("the user proceeds to checkout and creates an account with username base {string}, email {string} and password {string}")
@@ -155,28 +128,20 @@ public class PurchaseStepDefinition {
             OrderNumberIs.value(), Matchers.not(Matchers.equalTo(""))));
     }
 
-    // ─── Excepcionales: Registro (Tu rama) ────────────────────────────────────
+    // Excepcionales
 
     @And("the user logs out from the store")
     public void theUserLogsOutFromTheStore() {
-        buyer.attemptsTo(LogoutFromHome.now());
+        buyer.attemptsTo(Logout.fromStore());
     }
 
     @And("the user tries to register again with username {string}, email {string} and password {string}")
     public void theUserTriesToRegisterAgain(String ignoredUsername, String email, String password) {
-        // Sacamos el usuario exacto que creamos en el paso 1
-        String userFromMemory = OnStage.theActorInTheSpotlight().recall("DUPLICATE_USER");
 
-        OnStage.theActorInTheSpotlight().attemptsTo(
-                GoFromHomeTo.register(),
-                AttemptRegistration.withUsername(userFromMemory)
-                        .email(email)
-                        .password(password)
-                        .confirmPassword(password)
-                        .acceptingTerms()
-                        .validForm()
-                        .andSubmit()
-        );
+        String userFromMemory = buyer.recall("REGISTERED_USERNAME");
+
+        User sameUser = new User(userFromMemory, email, password);
+        buyer.attemptsTo(RegisterOnHome.withData(sameUser));
     }
 
     @Then("the system should display the registration error message {string}")
