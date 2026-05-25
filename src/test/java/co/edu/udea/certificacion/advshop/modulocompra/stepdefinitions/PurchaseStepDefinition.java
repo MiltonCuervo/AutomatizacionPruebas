@@ -1,20 +1,36 @@
 package co.edu.udea.certificacion.advshop.modulocompra.stepdefinitions;
 
+import co.edu.udea.certificacion.advshop.modulocompra.interactions.AttemptRegistration;
+import co.edu.udea.certificacion.advshop.modulocompra.interactions.GoFromHomeTo;
+import co.edu.udea.certificacion.advshop.modulocompra.interactions.LogoutFromHome;
+import co.edu.udea.certificacion.advshop.modulocompra.interactions.NavigateToProductPage;
+import co.edu.udea.certificacion.advshop.modulocompra.interactions.WaitTime;
 import co.edu.udea.certificacion.advshop.modulocompra.models.Product;
 import co.edu.udea.certificacion.advshop.modulocompra.models.User;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.RegistrationQuestions;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.BuyProduct;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.OpenThe;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnCheckout;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnHome;
+import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.ProductPage;
+
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.GivenWhenThen;
+import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
-import net.serenitybdd.screenplay.Actor;
 import net.thucydides.core.webdriver.ThucydidesWebDriverSupport;
+
+import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 public class PurchaseStepDefinition {
 
@@ -26,39 +42,44 @@ public class PurchaseStepDefinition {
         buyer = OnStage.theActorCalled("Robinson");
     }
 
+    // ─── Setup ───────────────────────────────────────────────────────────────
+
     @Given("the user is on the Advantage Online Shopping store")
     public void theUserIsOnTheStore() {
         buyer.wasAbleTo(OpenThe.browser());
     }
 
-    // Autenticación y registro
+    // ─── Registro ────────────────────────────────────────────────────────────
 
     @When("the user creates an account with username base {string}, email {string} and password {string}")
     public void registerUserWithDynamicData(String usernameBase, String email, String password) {
-        // Usuario dinámico combinando la base y el tiempo
         String timeStamp = String.valueOf(System.currentTimeMillis());
         String dynamicUser = usernameBase + timeStamp.substring(timeStamp.length() - 5);
-        
-        // Guardar en la memoria del actor por si la Question del Then lo necesita
         buyer.remember("REGISTERED_USERNAME", dynamicUser);
-
         User newUser = new User(dynamicUser, email, password);
+        buyer.attemptsTo(RegisterOnHome.withData(newUser));
+    }
+
+    // ✅ Nuevo: sin timestamp para el escenario de username repetido
+    @When("the user creates an account with fixed username {string}, email {string} and password {string}")
+    public void registerUserWithFixedUsername(String username, String email, String password) {
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String uniqueUsername = username + "_" + timeStamp.substring(timeStamp.length() - 4);
+        buyer.remember("FIXED_USERNAME", uniqueUsername);
+        User newUser = new User(uniqueUsername, email, password);
         buyer.attemptsTo(RegisterOnHome.withData(newUser));
     }
 
     @When("the user proceeds to checkout and creates an account with username base {string}, email {string} and password {string}")
     public void registerUserDuringCheckout(String usernameBase, String email, String password) {
-        // Usuario dinámico combinando la base y el tiempo
         String timeStamp = String.valueOf(System.currentTimeMillis());
         String dynamicUser = usernameBase + timeStamp.substring(timeStamp.length() - 5);
-        
-        // Guardar en la memoria del actor por si la Question del Then lo necesita
         buyer.remember("REGISTERED_USERNAME", dynamicUser);
-
         User newUser = new User(dynamicUser, email, password);
         buyer.attemptsTo(RegisterOnCheckout.withData(newUser));
     }
-    // Selección de productos y carrito
+
+    // ─── Productos ───────────────────────────────────────────────────────────
 
     @When("the user buys {int} units of {string} from the {string} section")
     public void theUserBuysProducts(int quantity, String product, String category) {
@@ -66,15 +87,7 @@ public class PurchaseStepDefinition {
         buyer.attemptsTo(BuyProduct.from(productToBuy));
     }
 
-    // @When("the user verifies that the cart contains {int} units of {string} and {int} units of {string}")
-    // public void theUserVerifiesTheCart(int qty1, String prod1, int qty2, String prod2) {
-    //     buyer.should(
-    //         SeeThat.theCartContains(prod1, qty1),
-    //         SeeThat.theCartContains(prod2, qty2)
-    //     );
-    // }
-
-    // Pago y confirmación
+    // ─── Pago y confirmación ─────────────────────────────────────────────────
 
     @When("the user pays with {string}")
     public void theUserPays(String paymentMethod) {
@@ -83,25 +96,117 @@ public class PurchaseStepDefinition {
 
     @Then("the purchase should be completed successfully")
     public void thePurchaseShouldBeCompleted() {
-    //     buyer.should(
-    //         GivenWhenThen.seeThat(ValidatePurchase.isSuccess(), Matchers.is(true))
-    //     );
+        // buyer.should(seeThat(ValidatePurchase.isSuccess(), is(true)));
     }
 
     @Then("an order number should be visible on the confirmation page")
     public void anOrderNumberShouldBeVisible() {
-        // buyer.should(
-        //     GivenWhenThen.seeThat(ConfirmationPage.orderNumber(), WebElementStateMatchers.isVisible())
-        // );
+        // buyer.should(seeThat(ConfirmationPage.orderNumber(), isVisible()));
     }
+
+    // ─── Excepcionales: registro ──────────────────────────────────────────────
+
+    @And("the user logs out from the store")
+    public void theUserLogsOutFromTheStore() {
+        buyer.attemptsTo(LogoutFromHome.now());
+    }
+
+    @And("the user tries to register again with username {string}, email {string} and password {string}")
+    public void theUserTriesToRegisterAgain(String username, String email, String password) {
+        String fixedUsername = buyer.recall("FIXED_USERNAME");
+        buyer.attemptsTo(
+                WaitTime.of(1),
+                GoFromHomeTo.register(),
+                WaitTime.of(1),
+                AttemptRegistration.withUsername(fixedUsername)
+                        .email(email)
+                        .password(password)
+                        .confirmPassword(password)
+                        .acceptingTerms()
+                        .validForm()
+                        .andSubmit()
+        );
+    }
+
+    @Then("the system should display the registration error message {string}")
+    public void theSystemShouldDisplayRegistrationError(String expectedMessage) {
+        buyer.attemptsTo(WaitTime.of(2));
+        GivenWhenThen.then(buyer).should(
+                seeThat("Username taken error is visible",
+                        RegistrationQuestions.usernameTakenErrorIsVisible(),
+                        is(true))
+        );
+    }
+
+    @When("the user navigates to the registration form from home")
+    public void theUserNavigatesToRegistrationFormFromHome() {
+        buyer.attemptsTo(
+                WaitTime.of(1),
+                GoFromHomeTo.register(),
+                WaitTime.of(2)
+        );
+    }
+
+    @And("the user tries to register with username {string}, email {string} and password {string}")
+    public void theUserTriesToRegisterWith(String username, String email, String password) {
+        buyer.attemptsTo(
+                WaitTime.of(1),
+                AttemptRegistration.withUsername(username)
+                        .email(email)
+                        .password(password)
+                        .confirmPassword(password)
+                        .acceptingTerms()
+                        .andSubmit()
+        );
+    }
+
+    @Then("the system should prevent the registration and show a password error")
+    public void theSystemShouldShowPasswordError() {
+        buyer.attemptsTo(WaitTime.of(2));
+        GivenWhenThen.then(buyer).should(
+                seeThat("Password too short error is visible",
+                        RegistrationQuestions.passwordErrorIsVisible(),
+                        is(true))
+        );
+    }
+
+    // ─── Excepcionales: carrito ───────────────────────────────────────────────
+
+    @When("the user navigates to the {string} product in {string}")
+    public void theUserNavigatesToProduct(String product, String category) {
+        buyer.attemptsTo(NavigateToProductPage.named(product, category));
+    }
+
+    @And("the user tries to decrease the quantity below 1")
+    public void theUserTriesToDecreaseQuantityBelowOne() {
+        buyer.attemptsTo(
+                WaitTime.of(1),
+                Click.on(ProductPage.DECREASE_QUANTITY_BUTTON),
+                WaitTime.of(1),
+                Click.on(ProductPage.DECREASE_QUANTITY_BUTTON),
+                WaitTime.of(1),
+                Click.on(ProductPage.DECREASE_QUANTITY_BUTTON),
+                WaitTime.of(1)
+        );
+    }
+
+    @Then("the quantity should not go below 1")
+    public void theQuantityShouldNotGoBelowOne() {
+        GivenWhenThen.then(buyer).should(
+                seeThat("Quantity stays at minimum 1",
+                        RegistrationQuestions.currentQuantityOnProductPage(),
+                        equalTo("1"))
+        );
+    }
+
+    // ─── Teardown ────────────────────────────────────────────────────────────
 
     @After
     public void closeBrowser() {
         try {
-            // Le ordena a Selenium cerrar físicamente la ventana actual
             ThucydidesWebDriverSupport.getDriver().quit();
         } catch (Exception e) {
-            System.out.println("El navegador ya estaba cerrado o no se pudo apagar: " + e.getMessage());
+            System.out.println("El navegador ya estaba cerrado: " + e.getMessage());
         }
     }
 }
