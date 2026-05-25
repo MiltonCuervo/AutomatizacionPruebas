@@ -3,20 +3,28 @@ package co.edu.udea.certificacion.advshop.modulocompra.stepdefinitions;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.ProceedTo;
 import co.edu.udea.certificacion.advshop.modulocompra.models.Product;
 import co.edu.udea.certificacion.advshop.modulocompra.models.User;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.ConfirmationMessageIs;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.OrderNumberIs;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.PaymentMethodWas;
+import co.edu.udea.certificacion.advshop.modulocompra.questions.UserIs;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.BuyProduct;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.OpenThe;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnCheckout;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnHome;
+
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.Scenario;
+
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.GivenWhenThen;
 import net.thucydides.core.webdriver.ThucydidesWebDriverSupport;
+import org.hamcrest.Matchers;
 
 public class PurchaseStepDefinition {
 
@@ -62,15 +70,8 @@ public class PurchaseStepDefinition {
         buyer.attemptsTo(BuyProduct.from(productToBuy));
     }
 
-    // @When("the user verifies that the cart contains {int} units of {string} and {int} units of {string}")
-    // public void theUserVerifiesTheCart(int qty1, String prod1, int qty2, String prod2) {
-    //     buyer.should(
-    //         SeeThat.theCartContains(prod1, qty1),
-    //         SeeThat.theCartContains(prod2, qty2)
-    //     );
-    // }
+    // Pago
 
-    // Pago y confirmación
     @When("the user proceeds to checkout")
     public void theUserProceedsToCheckout() {
         buyer.attemptsTo(ProceedTo.checkout());
@@ -81,24 +82,33 @@ public class PurchaseStepDefinition {
         //buyer.attemptsTo(ProcessPayment.withMethod(paymentMethod));
     }
 
-    @Then("the purchase should be completed successfully")
+    @Then("the purchase is completed successfully")
     public void thePurchaseShouldBeCompleted() {
-    //     buyer.should(
-    //         GivenWhenThen.seeThat(ValidatePurchase.isSuccess(), Matchers.is(true))
-    //     );
+        GivenWhenThen.then(buyer).should(            
+            GivenWhenThen.seeThat("El mensaje de éxito", 
+            ConfirmationMessageIs.value(), Matchers.containsString("Thank you for buying with Advantage")));
     }
 
-    @Then("an order number should be visible on the confirmation page")
-    public void anOrderNumberShouldBeVisible() {
-        // buyer.should(
-        //     GivenWhenThen.seeThat(ConfirmationPage.orderNumber(), WebElementStateMatchers.isVisible())
-        // );
+    // Confirmation
+
+    @Then("the user sees the order confirmation with their {string}, {string}, and order number")
+    public void anOrderNumberShouldBeVisible(String user, String paymentMethod) {
+        String buyerUsername = buyer.recall("REGISTERED_USERNAME");
+
+        GivenWhenThen.then(buyer).should(
+            GivenWhenThen.seeThat("El usuario en la confirmación", 
+            UserIs.value(), Matchers.equalTo(buyerUsername)),
+            
+            GivenWhenThen.seeThat("El método de pago utilizado", 
+            PaymentMethodWas.value(), Matchers.containsString(paymentMethod)),
+        
+            GivenWhenThen.seeThat("El número de orden generado", 
+            OrderNumberIs.value(), Matchers.not(Matchers.emptyOrNullString())));
     }
 
     @After
     public void closeBrowser() {
         try {
-            // Le ordena a Selenium cerrar físicamente la ventana actual
             ThucydidesWebDriverSupport.getDriver().quit();
         } catch (Exception e) {
             System.out.println("El navegador ya estaba cerrado o no se pudo apagar: " + e.getMessage());
