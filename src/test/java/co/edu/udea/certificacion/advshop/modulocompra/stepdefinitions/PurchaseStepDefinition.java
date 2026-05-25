@@ -1,12 +1,10 @@
 package co.edu.udea.certificacion.advshop.modulocompra.stepdefinitions;
 
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.ProceedTo;
+import co.edu.udea.certificacion.advshop.modulocompra.models.PaymentDetails;
 import co.edu.udea.certificacion.advshop.modulocompra.models.Product;
 import co.edu.udea.certificacion.advshop.modulocompra.models.User;
-import co.edu.udea.certificacion.advshop.modulocompra.tasks.BuyProduct;
-import co.edu.udea.certificacion.advshop.modulocompra.tasks.OpenThe;
-import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnCheckout;
-import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnHome;
+import co.edu.udea.certificacion.advshop.modulocompra.tasks.*;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -78,8 +76,13 @@ public class PurchaseStepDefinition {
 
     @When("the user pays with {string}")
     public void theUserPays(String paymentMethod) {
-        //buyer.attemptsTo(ProcessPayment.withMethod(paymentMethod));
+
+        PaymentDetails details = paymentMethod.equalsIgnoreCase("Master Credit")
+                ? PaymentDetails.masterCredit()
+                : PaymentDetails.safePay();
+        buyer.attemptsTo(ProcessPayment.with(details));
     }
+
 
     @Then("the purchase should be completed successfully")
     public void thePurchaseShouldBeCompleted() {
