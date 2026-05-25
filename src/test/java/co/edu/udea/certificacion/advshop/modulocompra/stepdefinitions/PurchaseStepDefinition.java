@@ -1,5 +1,6 @@
 package co.edu.udea.certificacion.advshop.modulocompra.stepdefinitions;
 
+import co.edu.udea.certificacion.advshop.modulocompra.interactions.ProceedTo;
 import co.edu.udea.certificacion.advshop.modulocompra.models.Product;
 import co.edu.udea.certificacion.advshop.modulocompra.models.User;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.BuyProduct;
@@ -11,6 +12,7 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.Scenario;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import net.serenitybdd.screenplay.Actor;
@@ -19,11 +21,13 @@ import net.thucydides.core.webdriver.ThucydidesWebDriverSupport;
 public class PurchaseStepDefinition {
 
     private Actor buyer;
+    private Scenario currentScenario;
 
     @Before
-    public void setTheStage() {
+    public void setTheStage(Scenario scenario) {
         OnStage.setTheStage(new OnlineCast());
         buyer = OnStage.theActorCalled("Robinson");
+        currentScenario = scenario;
     }
 
     @Given("the user is on the Advantage Online Shopping store")
@@ -43,21 +47,13 @@ public class PurchaseStepDefinition {
         buyer.remember("REGISTERED_USERNAME", dynamicUser);
 
         User newUser = new User(dynamicUser, email, password);
-        buyer.attemptsTo(RegisterOnHome.withData(newUser));
+        if (currentScenario.getSourceTagNames().contains("@checkout-flow")) {
+            buyer.attemptsTo(RegisterOnCheckout.withData(newUser));
+        } else {
+            buyer.attemptsTo(RegisterOnHome.withData(newUser));
+        }
     }
 
-    @When("the user proceeds to checkout and creates an account with username base {string}, email {string} and password {string}")
-    public void registerUserDuringCheckout(String usernameBase, String email, String password) {
-        // Usuario dinámico combinando la base y el tiempo
-        String timeStamp = String.valueOf(System.currentTimeMillis());
-        String dynamicUser = usernameBase + timeStamp.substring(timeStamp.length() - 5);
-        
-        // Guardar en la memoria del actor por si la Question del Then lo necesita
-        buyer.remember("REGISTERED_USERNAME", dynamicUser);
-
-        User newUser = new User(dynamicUser, email, password);
-        buyer.attemptsTo(RegisterOnCheckout.withData(newUser));
-    }
     // Selección de productos y carrito
 
     @When("the user buys {int} units of {string} from the {string} section")
@@ -75,10 +71,14 @@ public class PurchaseStepDefinition {
     // }
 
     // Pago y confirmación
+    @When("the user proceeds to checkout")
+    public void theUserProceedsToCheckout() {
+        buyer.attemptsTo(ProceedTo.checkout());
+    }
 
     @When("the user pays with {string}")
     public void theUserPays(String paymentMethod) {
-        // buyer.attemptsTo(ProcessPayment.withMethod(paymentMethod));
+        //buyer.attemptsTo(ProcessPayment.withMethod(paymentMethod));
     }
 
     @Then("the purchase should be completed successfully")

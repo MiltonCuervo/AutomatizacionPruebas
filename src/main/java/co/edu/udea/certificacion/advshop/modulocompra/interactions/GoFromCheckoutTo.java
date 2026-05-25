@@ -15,8 +15,6 @@ public class GoFromCheckoutTo implements Interaction {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
-        Click.on(CartPageElements.CART_ICON),
-        Click.on(CartPageElements.CHECKOUT_BUTTON), 
         WaitUntil.the(CheckoutPage.REGISTRATION_BTN, isVisible()).forNoMoreThan(10).seconds(),
         Click.on(CheckoutPage.REGISTRATION_BTN)
     );
