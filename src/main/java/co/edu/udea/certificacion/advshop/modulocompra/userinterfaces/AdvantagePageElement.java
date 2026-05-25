@@ -5,7 +5,6 @@ import net.serenitybdd.screenplay.targets.Target;
 public class AdvantagePageElement {
     
     public static final Target BTN_USER_PROFILE = Target.the("button to access user profile").locatedBy("//*[@id='menuUser']");
-    // el botón de crear nueva cuenta no tiene id, por lo que se localiza por su texto
     public static final Target BTN_CREATE_NEW_ACCOUNT = Target.the("button to create a new account").locatedBy("//a[contains(text(), 'CREATE NEW ACCOUNT')]");
     
     public static final Target INPUT_USERNAME = Target.the("input for username").locatedBy("//input[@name='usernameRegisterPage']");
@@ -15,5 +14,4 @@ public class AdvantagePageElement {
     public static final Target CHECKBOX_TERMS_AND_CONDITIONS = Target.the("checkbox for accepting terms and conditions").locatedBy("//input[@name='i_agree']");
     public static final Target BTN_REGISTER = Target.the("button to submit registration").locatedBy("//button[@id='register_btn']");
     public static final Target USERNAME_TEXT = Target.the("text username").locatedBy("//*[@id=\"menuUserLink\"]/span");
-
 }
