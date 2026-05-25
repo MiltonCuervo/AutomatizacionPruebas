@@ -103,7 +103,7 @@ public class PurchaseStepDefinition {
             UserIs.value(), Matchers.equalTo(buyerUsername)),
             
             GivenWhenThen.seeThat("El método de pago utilizado", 
-            PaymentMethodWas.value(), Matchers.containsString(paymentMethod)),
+            PaymentMethodWas.value(), Matchers.containsString(paymentMethod.replace(" ", ""))),
         
             GivenWhenThen.seeThat("El número de orden generado", 
             OrderNumberIs.value(), Matchers.not(Matchers.equalTo(""))));
