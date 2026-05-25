@@ -1,13 +1,26 @@
 Feature: Purchase flow for new users on Advantage Online Shopping
   As a new user of the online store
-  I want to register and buy multiple products with different quantities
-  So that I can complete my purchase successfully
+  I want to register, select multiple products with different quantities and pay successfully
+  So that I can complete my purchase from start to finish
 
-  Scenario: New user completes a purchase with multiple products
-    Given a new user is on the Advantage Online Shopping home page
-    When the user registers with valid credentials
-    And the user adds a product with quantity 2 to the cart
-    And the user adds a different product with quantity 1 to the cart
-    And the user proceeds to checkout
-    And the user completes the payment with valid payment details
-    Then the order should be confirmed successfully
+  Background:
+    Given the user is on the Advantage Online Shopping store
+
+  @registration @smoke
+  Scenario: New user registers successfully
+    When the user creates an account with username "qa_user_1013", email "qa_user_01@test.com" and password "Test@1234"
+    Then the user "qa_user_1013" should be logged in to the store
+
+
+  Scenario Outline: Registered user completes a purchase with multiple products
+   Given the user is logged in as "<username>"
+    When the user buys <quantity_1> units of "<product_1>" from the "<category_1>" section
+    And the user buys <quantity_2> units of "<product_2>" from the "<category_2>" section
+    And the user pays with "<payment_method>"
+    Then the purchase should be completed successfully
+    And an order number should be visible on the confirmation page
+
+    Examples:
+      | username     | category_1 | product_1    | quantity_1 | category_2 | product_2    | quantity_2 | payment_method |
+      | qa_user_1013 | Speakers   | Bose Soundlink Bluetooth Speaker III | 2          | Mice       | HP Z3200 WIRELESS MOUSE | 1          | Master Credit  |
+      #| qa_user_1013 | Speakers   | Bose SoundLink Wireless Speaker | 1          | Mice       | HP USB 3 BUTTON OPTICAL MOUSE | 2          | Safe Pay       |
