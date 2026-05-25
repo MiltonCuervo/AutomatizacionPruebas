@@ -67,7 +67,8 @@ public class AttemptRegistration implements Interaction {
         if (acceptTerms) {
             actor.attemptsTo(
                     WaitTime.of(1),
-                    Click.on(RegisterPage.CHECKBOX_TERMS_AND_CONDITIONS)
+                    // Usamos JavaScriptClick porque los checkboxes de Advantage suelen estar ocultos
+                    JavaScriptClick.on(RegisterPage.CHECKBOX_TERMS_AND_CONDITIONS)
             );
         }
 

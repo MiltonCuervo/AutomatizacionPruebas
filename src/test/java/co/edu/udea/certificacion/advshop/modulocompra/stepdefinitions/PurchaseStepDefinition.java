@@ -62,12 +62,26 @@ public class PurchaseStepDefinition {
 
     // ✅ Nuevo: sin timestamp para el escenario de username repetido
     @When("the user creates an account with fixed username {string}, email {string} and password {string}")
-    public void registerUserWithFixedUsername(String username, String email, String password) {
-        String timeStamp = String.valueOf(System.currentTimeMillis());
-        String uniqueUsername = username + "_" + timeStamp.substring(timeStamp.length() - 4);
-        buyer.remember("FIXED_USERNAME", uniqueUsername);
-        User newUser = new User(uniqueUsername, email, password);
-        buyer.attemptsTo(RegisterOnHome.withData(newUser));
+    public void theUserCreatesAnAccountWithFixedUsername(String baseUsername, String email, String password) {
+        // Generamos un sufijo corto de 4 números aleatorios para no superar los 15 caracteres
+        String randomSuffix = String.valueOf((int)(Math.random() * 9000) + 1000);
+
+        // Usamos una base corta (ej: "qa_") + el sufijo (ej: "qa_4821")
+        String uniqueUserForThisTest = "qa_" + randomSuffix;
+
+        // ¡LA MAGIA! Hacemos que el actor guarde este usuario en su memoria
+        OnStage.theActorInTheSpotlight().remember("DUPLICATE_USER", uniqueUserForThisTest);
+
+        OnStage.theActorInTheSpotlight().attemptsTo(
+                GoFromHomeTo.register(),
+                AttemptRegistration.withUsername(uniqueUserForThisTest)
+                        .email(email)
+                        .password(password)
+                        .confirmPassword(password)
+                        .acceptingTerms()
+                        .validForm() // Este será un registro exitoso real
+                        .andSubmit()
+        );
     }
 
     @When("the user proceeds to checkout and creates an account with username base {string}, email {string} and password {string}")
@@ -112,13 +126,13 @@ public class PurchaseStepDefinition {
     }
 
     @And("the user tries to register again with username {string}, email {string} and password {string}")
-    public void theUserTriesToRegisterAgain(String username, String email, String password) {
-        String fixedUsername = buyer.recall("FIXED_USERNAME");
-        buyer.attemptsTo(
-                WaitTime.of(1),
+    public void theUserTriesToRegisterAgain(String ignoredUsername, String email, String password) {
+        // Ignoramos el string del feature y sacamos el usuario exacto que creamos en el paso 1
+        String userFromMemory = OnStage.theActorInTheSpotlight().recall("DUPLICATE_USER");
+
+        OnStage.theActorInTheSpotlight().attemptsTo(
                 GoFromHomeTo.register(),
-                WaitTime.of(1),
-                AttemptRegistration.withUsername(fixedUsername)
+                AttemptRegistration.withUsername(userFromMemory)
                         .email(email)
                         .password(password)
                         .confirmPassword(password)
@@ -129,12 +143,10 @@ public class PurchaseStepDefinition {
     }
 
     @Then("the system should display the registration error message {string}")
-    public void theSystemShouldDisplayRegistrationError(String expectedMessage) {
-        buyer.attemptsTo(WaitTime.of(2));
-        GivenWhenThen.then(buyer).should(
-                seeThat("Username taken error is visible",
-                        RegistrationQuestions.usernameTakenErrorIsVisible(),
-                        is(true))
+    public void theSystemShouldDisplayRegistrationError(String expectedErrorMessage) {
+        OnStage.theActorInTheSpotlight().should(
+                GivenWhenThen.seeThat("Username taken error is visible",
+                        RegistrationQuestions.errorMessageIs(expectedErrorMessage))
         );
     }
 
