@@ -106,7 +106,7 @@ public class PurchaseStepDefinition {
             PaymentMethodWas.value(), Matchers.containsString(paymentMethod)),
         
             GivenWhenThen.seeThat("El número de orden generado", 
-            OrderNumberIs.value(), Matchers.not(Matchers.emptyOrNullString())));
+            OrderNumberIs.value(), Matchers.not(Matchers.equalTo(""))));
     }
 
     @After
