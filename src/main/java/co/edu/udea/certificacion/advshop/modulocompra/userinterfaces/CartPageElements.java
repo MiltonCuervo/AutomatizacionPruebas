@@ -5,6 +5,7 @@ import net.serenitybdd.screenplay.targets.Target;
 public class CartPageElements {
 
     public static final Target CART_ICON = Target.the("cart icon").locatedBy("//*[@id=\"shoppingCartLink\"]");
+    public static final Target CHECKOUT_BUTTON = Target.the("checkout button").locatedBy("//button[@id='checkOutButton']");
 
 
     public static Target productInCart(String productName) {

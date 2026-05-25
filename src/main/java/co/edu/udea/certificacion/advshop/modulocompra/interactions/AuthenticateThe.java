@@ -11,7 +11,6 @@ import net.serenitybdd.screenplay.matchers.WebElementStateMatchers;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 
 import static co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.RegisterPage.*;
-import static co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.HomePage.*;
 
 public class AuthenticateThe implements Interaction {
 
@@ -23,10 +22,6 @@ public class AuthenticateThe implements Interaction {
 
     @Override
     public <T extends Actor> void performAs(T actor) {
-        actor.attemptsTo(Click.on(BTN_USER_PROFILE));
-        actor.attemptsTo(
-            WaitUntil.the(BTN_CREATE_NEW_ACCOUNT, WebElementStateMatchers.isVisible())
-            .forNoMoreThan(10).seconds(), Click.on(BTN_CREATE_NEW_ACCOUNT));
 
         actor.attemptsTo(
             WaitUntil.the(INPUT_USERNAME, WebElementStateMatchers.isVisible())
