@@ -1,10 +1,14 @@
 package co.edu.udea.certificacion.advshop.modulocompra.stepdefinitions;
 
-import co.edu.udea.certificacion.advshop.modulocompra.interactions.AttemptRegistration;
-import co.edu.udea.certificacion.advshop.modulocompra.interactions.GoFromHomeTo;
-import co.edu.udea.certificacion.advshop.modulocompra.interactions.ClickLogoutBtn;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
+import org.hamcrest.Matchers;
+
+import co.edu.udea.certificacion.advshop.modulocompra.exceptions.PasswordValidationErrorException;
+import co.edu.udea.certificacion.advshop.modulocompra.exceptions.ProductQuantityException;
+import co.edu.udea.certificacion.advshop.modulocompra.exceptions.RegistrationErrorException;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.NavigateToProductPage;
-import co.edu.udea.certificacion.advshop.modulocompra.interactions.WaitTime;
 import co.edu.udea.certificacion.advshop.modulocompra.interactions.ProceedTo;
 import co.edu.udea.certificacion.advshop.modulocompra.models.PaymentDetails;
 import co.edu.udea.certificacion.advshop.modulocompra.models.Product;
@@ -20,8 +24,9 @@ import co.edu.udea.certificacion.advshop.modulocompra.tasks.OpenThe;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.ProcessPayment;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnCheckout;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnHome;
-import co.edu.udea.certificacion.advshop.modulocompra.userinterfaces.ProductPage;
-
+import co.edu.udea.certificacion.advshop.modulocompra.tasks.exceptions.DecreaseQuantityBelowMinimum;
+import co.edu.udea.certificacion.advshop.modulocompra.tasks.exceptions.NavigateToRegistrationForm;
+import co.edu.udea.certificacion.advshop.modulocompra.tasks.exceptions.TryInvalidRegistration;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -29,18 +34,11 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.GivenWhenThen;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import net.thucydides.core.webdriver.ThucydidesWebDriverSupport;
-import org.hamcrest.Matchers;
-
-import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 public class PurchaseStepDefinition {
 
@@ -63,22 +61,16 @@ public class PurchaseStepDefinition {
     public void registerUserWithDynamicData(String usernameBase, String email, String password) {
         String timeStamp = String.valueOf(System.currentTimeMillis());
         String dynamicUser = usernameBase + timeStamp.substring(timeStamp.length() - 5);
+        
         buyer.remember("REGISTERED_USERNAME", dynamicUser);
+        
         User newUser = new User(dynamicUser, email, password);
+        
         if (currentScenario.getSourceTagNames().contains("@checkout-flow")) {
             buyer.attemptsTo(RegisterOnCheckout.withData(newUser));
         } else {
             buyer.attemptsTo(RegisterOnHome.withData(newUser));
         }
-    }
-
-    @When("the user proceeds to checkout and creates an account with username base {string}, email {string} and password {string}")
-    public void registerUserDuringCheckout(String usernameBase, String email, String password) {
-        String timeStamp = String.valueOf(System.currentTimeMillis());
-        String dynamicUser = usernameBase + timeStamp.substring(timeStamp.length() - 5);
-        buyer.remember("REGISTERED_USERNAME", dynamicUser);
-        User newUser = new User(dynamicUser, email, password);
-        buyer.attemptsTo(RegisterOnCheckout.withData(newUser));
     }
 
     @When("the user buys {int} units of {string} from the {string} section")
@@ -124,8 +116,9 @@ public class PurchaseStepDefinition {
             OrderNumberIs.value(), Matchers.not(Matchers.equalTo(""))));
     }
 
-    // Excepcionales --------------------------------------------------
+    // EXCEPCIONALES 
 
+    // Escenario: El usuario intenta registrarse con un nombre de usuario ya tomado
     @And("the user logs out from the store")
     public void theUserLogsOutFromTheStore() {
         buyer.attemptsTo(Logout.fromStore());
@@ -142,44 +135,35 @@ public class PurchaseStepDefinition {
 
     @Then("the system should display the registration error message {string}")
     public void theSystemShouldDisplayRegistrationError(String expectedErrorMessage) {
-        OnStage.theActorInTheSpotlight().should(
+        buyer.should(
                 GivenWhenThen.seeThat("Username taken error is visible",
                         RegistrationQuestions.errorMessageIs(expectedErrorMessage))
+                        .orComplainWith(RegistrationErrorException.class, RegistrationErrorException.USERNAME_ALREADY_EXISTS_FAILED)
         );
     }
 
+    // Escenario: El usuario intenta registrarse con una contraseña inválida
     @When("the user navigates to the registration form from home")
     public void theUserNavigatesToRegistrationFormFromHome() {
-        buyer.attemptsTo(
-                WaitTime.of(1),
-                GoFromHomeTo.register(),
-                WaitTime.of(2)
-        );
+        buyer.attemptsTo(NavigateToRegistrationForm.now());
     }
 
     @And("the user tries to register with username {string}, email {string} and password {string}")
     public void theUserTriesToRegisterWith(String username, String email, String password) {
-        buyer.attemptsTo(
-                WaitTime.of(1),
-                AttemptRegistration.withUsername(username)
-                        .email(email)
-                        .password(password)
-                        .confirmPassword(password)
-                        .acceptingTerms()
-                        .andSubmit()
-        );
+        buyer.attemptsTo(TryInvalidRegistration.withData(username, email, password));
     }
 
     @Then("the system should prevent the registration and show a password error")
     public void theSystemShouldShowPasswordError() {
-        buyer.attemptsTo(WaitTime.of(2));
-        GivenWhenThen.then(buyer).should(
-                seeThat("Password too short error is visible",
+        buyer.should(
+                GivenWhenThen.seeThat("Password too short error is visible",
                         RegistrationQuestions.passwordErrorIsVisible(),
                         is(true))
+                        .orComplainWith(PasswordValidationErrorException.class, PasswordValidationErrorException.PASSWORD_TOO_SHORT_FAILED)
         );
     }
 
+    // Escenario: El usuario intenta disminuir la cantidad de un producto por debajo de 1
     @When("the user navigates to the {string} product in {string}")
     public void theUserNavigatesToProduct(String product, String category) {
         buyer.attemptsTo(NavigateToProductPage.named(product, category));
@@ -187,23 +171,16 @@ public class PurchaseStepDefinition {
 
     @And("the user tries to decrease the quantity below 1")
     public void theUserTriesToDecreaseQuantityBelowOne() {
-        buyer.attemptsTo(
-                WaitTime.of(1),
-                Click.on(ProductPage.DECREASE_QUANTITY_BUTTON),
-                WaitTime.of(1),
-                Click.on(ProductPage.DECREASE_QUANTITY_BUTTON),
-                WaitTime.of(1),
-                Click.on(ProductPage.DECREASE_QUANTITY_BUTTON),
-                WaitTime.of(1)
-        );
+        buyer.attemptsTo(DecreaseQuantityBelowMinimum.multipleTimes());
     }
 
     @Then("the quantity should not go below 1")
     public void theQuantityShouldNotGoBelowOne() {
-        GivenWhenThen.then(buyer).should(
-                seeThat("Quantity stays at minimum 1",
+        buyer.should(
+                GivenWhenThen.seeThat("Quantity stays at minimum 1",
                         RegistrationQuestions.currentQuantityOnProductPage(),
                         equalTo("1"))
+                        .orComplainWith(ProductQuantityException.class, ProductQuantityException.QUANTITY_BELOW_MINIMUM_FAILED)
         );
     }
 
