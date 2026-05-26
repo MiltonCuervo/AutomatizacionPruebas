@@ -18,9 +18,9 @@ public class ConfirmOrder implements Interaction {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
-                WaitUntil.the(CheckoutPage.BTN_PAY_NOW, isVisible())
+                WaitUntil.the(CheckoutPage.BTN_PAY_NOW_SAFE_PAY, isVisible())
                         .forNoMoreThan(10).seconds(),
-                Click.on(CheckoutPage.BTN_PAY_NOW)
+                Click.on(CheckoutPage.BTN_PAY_NOW_SAFE_PAY)
         );
     }
 

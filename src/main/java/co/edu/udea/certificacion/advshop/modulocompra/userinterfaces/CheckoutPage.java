@@ -37,8 +37,12 @@ public class CheckoutPage {
             .locatedBy("//*[@id='paymentMethod']/div/div[4]/sec-form/div[1]/sec-view[2]/div/input");
 
     // ── Pay ───────────────────────────────────────────────────────
-    public static final Target BTN_PAY_NOW = Target.the("pay now button")
+    public static final Target BTN_PAY_NOW = Target.the("pay now button mastercard")
             .locatedBy("//*[@id='pay_now_btn_ManualPayment']");
+
+        public static final Target BTN_PAY_NOW_SAFE_PAY = Target.the("pay now button safe pay")
+            .locatedBy("//*[@id='pay_now_btn_SAFEPAY']");
+
 
 
 }

@@ -8,31 +8,31 @@ Feature: Purchase flow for new users on Advantage Online Shopping
 
 # HAPPY PATHS
 
-  # @e2e @traditional-flow @smoke
-  # Scenario Outline: Successful E2E purchase with prior registration
-  #   When the user creates an account with username base "<username_base>", email "<email>" and password "<password>"
-  #   And the user buys <quantity> units of "<product>" from the "<category>" section
-  #   And the user proceeds to checkout
-  #   And the user pays with "<payment_method>"
-  #   Then the purchase is completed successfully
-  #   And the user sees the order confirmation with their "<username>", "<payment_method>", and order number
+  @e2e @traditional-flow @smoke
+  Scenario Outline: Successful E2E purchase with prior registration
+    When the user creates an account with username base "<username_base>", email "<email>" and password "<password>"
+    And the user buys <quantity> units of "<product>" from the "<category>" section
+    And the user proceeds to checkout
+    And the user pays with "<payment_method>"
+    Then the purchase is completed successfully
+    And the user sees the order confirmation with their "<username>", "<payment_method>", and order number
 
-  #   Examples:
-  #     | username_base | email       | password  | quantity | product                 | category | payment_method |
-  #     | qa_user       | qa@test.com | Test@1234 | 1        | hp z3200 wireless mouse | Mice     | Master Credit  |
+    Examples:
+      | username_base | email       | password  | quantity | product                 | category | payment_method |
+      | qa_user       | qa@test.com | Test@1234 | 1        | hp z3200 wireless mouse | Mice     | Safe Pay  |
 
-  # @e2e @checkout-flow
-  # Scenario Outline: Successful E2E purchase registering during checkout
-  #   When the user buys <quantity> units of "<product>" from the "<category>" section
-  #   And the user proceeds to checkout 
-  #   And the user creates an account with username base "<username_base>", email "<email>" and password "<password>"
-  #   And the user pays with "<payment_method>"
-  #   Then the purchase is completed successfully
-  #   And the user sees the order confirmation with their "<username>", "<payment_method>", and order number
+  @e2e @checkout-flow
+  Scenario Outline: Successful E2E purchase registering during checkout
+    When the user buys <quantity> units of "<product>" from the "<category>" section
+    And the user proceeds to checkout 
+    And the user creates an account with username base "<username_base>", email "<email>" and password "<password>"
+    And the user pays with "<payment_method>"
+    Then the purchase is completed successfully
+    And the user sees the order confirmation with their "<username>", "<payment_method>", and order number
 
-  #   Examples:
-  #     | quantity | product                 | category | username_base | email       | password  | payment_method |
-  #     | 1        | hp z3200 wireless mouse | Mice     | qa_user       | qa@test.com | Test@1234 | Master Credit  |
+    Examples:
+      | quantity | product                 | category | username_base | email       | password  | payment_method |
+      | 1        | hp z3200 wireless mouse | Mice     | qa_user       | qa@test.com | Test@1234 | Safe Pay  |
 
   # EXCEPTIONS
 
