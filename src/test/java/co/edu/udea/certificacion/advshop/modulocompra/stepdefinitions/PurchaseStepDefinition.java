@@ -25,8 +25,6 @@ import co.edu.udea.certificacion.advshop.modulocompra.tasks.ProcessPayment;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnCheckout;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.RegisterOnHome;
 import co.edu.udea.certificacion.advshop.modulocompra.tasks.exceptions.DecreaseQuantityBelowMinimum;
-import co.edu.udea.certificacion.advshop.modulocompra.tasks.exceptions.NavigateToRegistrationForm;
-import co.edu.udea.certificacion.advshop.modulocompra.tasks.exceptions.TryInvalidRegistration;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -143,14 +141,10 @@ public class PurchaseStepDefinition {
     }
 
     // Escenario: El usuario intenta registrarse con una contraseña inválida
-    @When("the user navigates to the registration form from home")
-    public void theUserNavigatesToRegistrationFormFromHome() {
-        buyer.attemptsTo(NavigateToRegistrationForm.now());
-    }
-
-    @And("the user tries to register with username {string}, email {string} and password {string}")
+    @When("the user tries to register with username {string}, email {string} and password {string}")
     public void theUserTriesToRegisterWith(String username, String email, String password) {
-        buyer.attemptsTo(TryInvalidRegistration.withData(username, email, password));
+        User userWithInvalidPassword = new User(username, email, password);
+        buyer.attemptsTo(RegisterOnHome.withData(userWithInvalidPassword));
     }
 
     @Then("the system should prevent the registration and show a password error")

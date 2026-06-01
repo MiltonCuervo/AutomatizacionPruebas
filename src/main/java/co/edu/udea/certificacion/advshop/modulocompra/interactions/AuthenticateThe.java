@@ -30,7 +30,8 @@ public class AuthenticateThe implements Interaction {
             Enter.theValue(user.getEmail()).into(INPUT_EMAIL),
             Enter.theValue(user.getPassword()).into(INPUT_PASSWORD),
             Enter.theValue(user.getPassword()).into(INPUT_CONFIRM_PASSWORD),
-            
+            WaitUntil.the(CHECKBOX_TERMS_AND_CONDITIONS, WebElementStateMatchers.isVisible())
+                    .forNoMoreThan(10).seconds(),
             Click.on(CHECKBOX_TERMS_AND_CONDITIONS),
             Click.on(BTN_REGISTER));
     }

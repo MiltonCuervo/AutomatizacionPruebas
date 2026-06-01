@@ -45,8 +45,7 @@ Feature: Purchase flow for new users on Advantage Online Shopping
 
   @exceptions @registration-stage
   Scenario: Try to register with an invalid password format
-    When the user navigates to the registration form from home
-    And the user tries to register with username "qa_weak", email "weak@test.com" and password "123"
+    When the user tries to register with username "qa_weak", email "weak@test.com" and password "123"
     Then the system should prevent the registration and show a password error
 
   @exceptions @cart-stage
